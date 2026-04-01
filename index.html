@@ -2,7 +2,10 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
   <title>ДА автополив</title>
 
   <link rel="manifest" href="manifest.json" />
@@ -15,18 +18,22 @@
 
   <style>
     :root {
-      --bg: #f5f1e8;
-      --card: rgba(255, 255, 255, 0.88);
-      --text: #2d2924;
-      --muted: #73685d;
+      --bg: #f8f2e8;
+      --card: rgba(255, 255, 255, 0.76);
+      --card-strong: rgba(255, 255, 255, 0.92);
+      --text: #2c241c;
+      --muted: #75695c;
       --accent: #8b6b3f;
-      --accent-dark: #72552f;
-      --line: rgba(139, 107, 63, 0.12);
-      --shadow: 0 10px 30px rgba(43, 31, 17, 0.08);
-      --radius-xl: 26px;
-      --radius-lg: 20px;
-      --radius-md: 16px;
-      --radius-sm: 12px;
+      --accent-dark: #6c4f2b;
+      --line: rgba(139, 107, 63, 0.14);
+      --shadow: 0 18px 48px rgba(40, 28, 13, 0.10);
+      --shadow-soft: 0 10px 30px rgba(40, 28, 13, 0.07);
+      --radius-xxl: 34px;
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 18px;
+      --maxw: 720px;
+      --nav-h: 86px;
     }
 
     * {
@@ -40,87 +47,243 @@
 
     body {
       margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(139,107,63,0.10), transparent 35%),
-        radial-gradient(circle at top right, rgba(139,107,63,0.07), transparent 30%),
-        var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+        "SF Pro Text", "Segoe UI", Arial, sans-serif;
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Arial, sans-serif;
-      line-height: 1.45;
-      padding: 18px 16px 110px;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(160, 122, 69, 0.18), transparent 28%),
+        radial-gradient(circle at 100% 5%, rgba(139, 107, 63, 0.14), transparent 30%),
+        radial-gradient(circle at 50% 100%, rgba(255, 255, 255, 0.4), transparent 26%),
+        linear-gradient(180deg, #fbf7f0 0%, #f4ebde 100%);
+      min-height: 100vh;
+      padding: calc(env(safe-area-inset-top) + 14px) 14px calc(var(--nav-h) + 34px);
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(70px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.45;
+    }
+
+    body::before {
+      width: 220px;
+      height: 220px;
+      left: -70px;
+      top: 60px;
+      background: rgba(160, 122, 69, 0.18);
+      animation: floatGlow 12s ease-in-out infinite;
+    }
+
+    body::after {
+      width: 260px;
+      height: 260px;
+      right: -90px;
+      top: 220px;
+      background: rgba(255, 255, 255, 0.42);
+      animation: floatGlow 14s ease-in-out infinite reverse;
+    }
+
+    @keyframes floatGlow {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-16px) translateX(8px); }
     }
 
     .app {
-      max-width: 560px;
+      position: relative;
+      z-index: 1;
+      max-width: var(--maxw);
       margin: 0 auto;
     }
 
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      margin-bottom: 14px;
+      padding-top: 2px;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.68);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: var(--shadow-soft);
+      border-radius: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 12px 24px rgba(139, 107, 63, 0.24);
+      flex: 0 0 auto;
+      background: linear-gradient(180deg, #9d7944, #7a5c32);
+    }
+
+    .brand-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .brand-text {
+      min-width: 0;
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .top-link {
+      text-decoration: none;
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: rgba(139, 107, 63, 0.1);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+
     .section {
+      position: relative;
+      overflow: hidden;
       background: var(--card);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.65);
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       box-shadow: var(--shadow);
-      border-radius: var(--radius-xl);
+      border-radius: var(--radius-xxl);
       padding: 22px 18px;
       margin-bottom: 16px;
     }
 
-    .hero {
-      padding: 28px 20px 22px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::before {
+    .section::before {
       content: "";
       position: absolute;
-      width: 180px;
-      height: 180px;
-      right: -60px;
-      top: -70px;
-      border-radius: 50%;
-      background: rgba(139,107,63,0.09);
-      filter: blur(6px);
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(255,255,255,0.22), transparent 34%);
+    }
+
+    .hero {
+      padding: 28px 20px 24px;
+      background:
+        radial-gradient(circle at 90% 10%, rgba(139,107,63,0.18), transparent 22%),
+        radial-gradient(circle at 0% 0%, rgba(255,255,255,0.9), transparent 20%),
+        linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.78));
+    }
+
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-logo {
+      width: 76px;
+      height: 76px;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 18px 34px rgba(139, 107, 63, 0.26);
+      border: 1px solid rgba(255,255,255,0.6);
+      background: linear-gradient(180deg, #9f7a46, #7a5b33);
+      flex: 0 0 auto;
+    }
+
+    .hero-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .eyebrow {
-      display: inline-block;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--accent);
-      background: rgba(139,107,63,0.10);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
       padding: 8px 12px;
       border-radius: 999px;
-      margin-bottom: 14px;
-      position: relative;
-      z-index: 1;
+      background: rgba(139, 107, 63, 0.11);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(139, 107, 63, 0.08);
     }
 
     h1 {
-      margin: 0 0 10px;
-      font-size: 34px;
-      line-height: 1.05;
-      letter-spacing: -0.03em;
-      position: relative;
-      z-index: 1;
+      margin: 0;
+      font-size: clamp(34px, 8vw, 56px);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+      max-width: 9.5em;
     }
 
-    .hero p {
-      margin: 0;
+    .hero-text {
+      margin: 12px 0 0;
       color: var(--muted);
       font-size: 16px;
-      position: relative;
-      z-index: 1;
+      max-width: 42em;
     }
 
     .hero-actions {
-      margin-top: 20px;
       display: grid;
       gap: 10px;
-      position: relative;
-      z-index: 1;
     }
 
     .btn {
@@ -129,15 +292,30 @@
       justify-content: center;
       gap: 10px;
       width: 100%;
-      min-height: 54px;
+      min-height: 56px;
       padding: 14px 18px;
-      border-radius: 16px;
-      border: none;
+      border-radius: 18px;
       text-decoration: none;
+      border: 1px solid transparent;
       font-size: 16px;
-      font-weight: 700;
-      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      font-weight: 850;
+      transition: transform 0.18s ease, box-shadow 0.22s ease, background 0.22s ease, border-color 0.22s ease;
       cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.22) 50%, transparent 100%);
+      transform: translateX(-120%);
+      transition: transform 0.65s ease;
+    }
+
+    .btn:hover::after {
+      transform: translateX(120%);
     }
 
     .btn:active {
@@ -145,152 +323,232 @@
     }
 
     .btn-primary {
-      background: var(--accent);
       color: #fff;
-      box-shadow: 0 10px 24px rgba(139, 107, 63, 0.22);
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-dark);
+      background: linear-gradient(180deg, #9f7a46 0%, #7a5b33 100%);
+      box-shadow: 0 14px 28px rgba(139, 107, 63, 0.24);
     }
 
     .btn-secondary {
-      background: #fff;
       color: var(--accent);
-      border: 1.5px solid rgba(139, 107, 63, 0.18);
+      background: rgba(255,255,255,0.86);
+      border-color: rgba(139,107,63,0.14);
+      box-shadow: var(--shadow-soft);
     }
 
-    .stats {
+    .hero-panels {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      margin-top: 18px;
+      grid-template-columns: repeat(3, 1fr);
     }
 
-    .stat {
-      background: rgba(255,255,255,0.72);
+    .panel {
+      padding: 14px 12px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.74);
       border: 1px solid rgba(139,107,63,0.10);
-      border-radius: 18px;
-      padding: 14px 10px;
       text-align: center;
+      box-shadow: var(--shadow-soft);
     }
 
-    .stat-number {
+    .panel-num {
       display: block;
       font-size: 20px;
-      font-weight: 800;
+      font-weight: 900;
       color: var(--accent);
       margin-bottom: 4px;
     }
 
-    .stat-label {
+    .panel-label {
+      display: block;
       font-size: 12px;
       color: var(--muted);
     }
 
+    .hero-card {
+      padding: 16px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.86), rgba(255,255,255,0.72));
+      border: 1px solid rgba(139,107,63,0.12);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .hero-card-title {
+      margin: 0 0 8px;
+      font-size: 15px;
+      font-weight: 850;
+    }
+
+    .hero-card-text {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
     .section-title {
+      position: relative;
+      z-index: 1;
       margin: 0 0 6px;
-      font-size: 24px;
-      letter-spacing: -0.02em;
+      font-size: 26px;
+      letter-spacing: -0.035em;
     }
 
     .section-subtitle {
+      position: relative;
+      z-index: 1;
       margin: 0 0 16px;
-      color: var(--muted);
       font-size: 14px;
+      color: var(--muted);
+      max-width: 42em;
     }
 
-    .services-grid,
-    .benefits-grid,
-    .gallery-grid,
-    .steps-grid {
+    .grid {
+      position: relative;
+      z-index: 1;
       display: grid;
       gap: 12px;
     }
 
-    .service-card,
-    .benefit-card,
-    .gallery-card,
-    .step-card {
-      background: rgba(255,255,255,0.82);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      padding: 16px;
+    .grid.two {
+      grid-template-columns: 1fr;
     }
 
-    .service-card h3,
-    .benefit-card h3,
-    .gallery-card h3,
-    .step-card h3 {
+    .card {
+      background: var(--card-strong);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 16px;
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.28s ease, box-shadow 0.28s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 36px rgba(40, 28, 13, 0.09);
+    }
+
+    .card h3 {
       margin: 0 0 8px;
       font-size: 17px;
+      letter-spacing: -0.02em;
     }
 
-    .service-card p,
-    .benefit-card p,
-    .gallery-card p,
-    .step-card p,
-    .about-text,
-    .install-note {
+    .card p {
       margin: 0;
       color: var(--muted);
       font-size: 14px;
     }
 
-    .service-icon,
-    .benefit-icon,
-    .step-number {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      background: rgba(139,107,63,0.10);
-      color: var(--accent);
+    .icon-box {
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 19px;
-      font-weight: 800;
+      font-size: 20px;
       margin-bottom: 12px;
+      color: var(--accent);
+      background: linear-gradient(180deg, rgba(139,107,63,0.16), rgba(139,107,63,0.08));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+    }
+
+    .gallery-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .gallery-card {
+      padding: 14px;
     }
 
     .gallery-placeholder {
-      height: 165px;
-      border-radius: 18px;
+      height: 180px;
+      border-radius: 24px;
+      border: 1px dashed rgba(139,107,63,0.22);
       background:
-        linear-gradient(135deg, rgba(139,107,63,0.10), rgba(139,107,63,0.04)),
+        linear-gradient(135deg, rgba(255,255,255,0.66), rgba(139,107,63,0.08)),
         repeating-linear-gradient(
           -45deg,
           rgba(255,255,255,0.4),
-          rgba(255,255,255,0.4) 10px,
-          rgba(255,255,255,0.2) 10px,
-          rgba(255,255,255,0.2) 20px
+          rgba(255,255,255,0.4) 11px,
+          rgba(139,107,63,0.04) 11px,
+          rgba(139,107,63,0.04) 22px
         );
-      border: 1px dashed rgba(139,107,63,0.22);
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 16px;
+      padding: 18px;
       color: var(--accent);
-      font-weight: 700;
+      font-weight: 850;
+      font-size: 15px;
       margin-bottom: 14px;
     }
 
-    .about-list,
-    .contact-list {
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .chip {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(139, 107, 63, 0.1);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .step-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .step-num {
+      flex: 0 0 44px;
+      width: 44px;
+      height: 44px;
+      border-radius: 15px;
+      background: linear-gradient(180deg, #9f7a46, #795930);
+      color: #fff;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 22px rgba(139, 107, 63, 0.23);
+    }
+
+    .about-note {
+      padding: 16px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(255,255,255,0.75));
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      z-index: 1;
+    }
+
+    .info-list {
+      position: relative;
+      z-index: 1;
       display: grid;
       gap: 10px;
-      margin-top: 16px;
+      margin-top: 14px;
     }
 
     .info-row {
-      background: rgba(255,255,255,0.78);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 14px 15px;
       display: flex;
-      align-items: flex-start;
       gap: 12px;
+      align-items: flex-start;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.84);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
     }
 
     .info-row strong {
@@ -299,23 +557,19 @@
       font-size: 15px;
     }
 
-    .mini {
-      font-size: 13px;
+    .mini-text {
       color: var(--muted);
-    }
-
-    .contact-actions {
-      display: grid;
-      gap: 10px;
-      margin-top: 16px;
+      font-size: 13px;
     }
 
     .install-box {
-      border: 1px solid rgba(139,107,63,0.14);
-      background: rgba(255,255,255,0.68);
-      border-radius: 18px;
-      padding: 16px;
       margin-top: 16px;
+      padding: 16px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(139,107,63,0.08), rgba(255,255,255,0.72));
+      border: 1px solid rgba(139,107,63,0.14);
+      position: relative;
+      z-index: 1;
     }
 
     .install-box strong {
@@ -324,48 +578,77 @@
       font-size: 15px;
     }
 
-    .footer-space {
-      height: 8px;
+    .install-box p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .cta-box {
+      text-align: center;
+      padding-top: 28px;
+      padding-bottom: 28px;
+      background:
+        radial-gradient(circle at center, rgba(139,107,63,0.12), transparent 42%),
+        linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.8));
+    }
+
+    .cta-box h2 {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 10px;
+      font-size: clamp(28px, 7vw, 40px);
+      letter-spacing: -0.05em;
+    }
+
+    .cta-box p {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
     }
 
     .bottom-nav {
       position: fixed;
       left: 12px;
       right: 12px;
-      bottom: 12px;
-      max-width: 560px;
+      bottom: calc(env(safe-area-inset-bottom) + 10px);
+      max-width: var(--maxw);
       margin: 0 auto;
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(255,255,255,0.85);
-      box-shadow: 0 12px 30px rgba(37, 28, 17, 0.12);
-      border-radius: 22px;
       padding: 10px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(255,255,255,0.76);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 14px 36px rgba(32, 23, 12, 0.14);
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 8px;
-      z-index: 50;
+      z-index: 100;
     }
 
     .nav-link {
       text-decoration: none;
       color: var(--muted);
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 850;
       text-align: center;
-      padding: 8px 4px;
-      border-radius: 14px;
+      padding: 9px 4px;
+      border-radius: 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
-      transition: background 0.2s ease, color 0.2s ease;
+      gap: 5px;
+      transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
     }
 
     .nav-link:hover,
     .nav-link:active {
-      background: rgba(139,107,63,0.10);
+      background: rgba(139,107,63,0.1);
       color: var(--accent);
+      transform: translateY(-1px);
     }
 
     .nav-icon {
@@ -373,11 +656,65 @@
       line-height: 1;
     }
 
+    .floating-max {
+      position: fixed;
+      right: 16px;
+      bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 16px);
+      z-index: 95;
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      background: linear-gradient(180deg, #9f7a46 0%, #78582f 100%);
+      box-shadow: 0 18px 30px rgba(139, 107, 63, 0.28);
+      border: 1px solid rgba(255,255,255,0.35);
+      animation: pulseFloat 2.8s ease-in-out infinite;
+    }
+
+    @keyframes pulseFloat {
+      0%, 100% {
+        transform: translateY(0);
+        box-shadow: 0 18px 30px rgba(139, 107, 63, 0.28);
+      }
+      50% {
+        transform: translateY(-4px);
+        box-shadow: 0 22px 34px rgba(139, 107, 63, 0.34);
+      }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     @media (min-width: 720px) {
-      .services-grid,
-      .benefits-grid,
-      .gallery-grid,
-      .steps-grid {
+      .hero-grid {
+        grid-template-columns: 1.1fr 0.9fr;
+        align-items: end;
+      }
+
+      .hero-actions {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .grid.two {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .gallery-grid {
         grid-template-columns: 1fr 1fr;
       }
 
@@ -390,178 +727,263 @@
 <body>
   <div class="app">
 
-    <section class="section hero" id="top">
-      <div class="eyebrow">ДА автополив</div>
-      <h1>Премиальные системы автополива под ключ</h1>
-      <p>
-        Современные решения для частных участков, садов и красивого ландшафта.
-        Удобная связь, аккуратный подход и комфортный сервис.
-      </p>
-
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="https://max.ru/u/f9LHodD0cOJqcSXvWud7ovTfTMkCtQk4Cwhu7j29Et6NJNkt8e-JeLGZksU" target="_blank" rel="noopener noreferrer">
-          Написать в MAX
-        </a>
-        <a class="btn btn-secondary" href="https://www.instagram.com/dmitriy.marchenko_?igsh=Z24yaGg3c3Fhd2p0" target="_blank" rel="noopener noreferrer">
-          Открыть Instagram
-        </a>
+    <header class="topbar reveal">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark">
+            <img src="img/apple-touch-icon.png" alt="Логотип ДА автополив" />
+          </div>
+          <div class="brand-text">
+            <div class="brand-title">ДА автополив</div>
+            <div class="brand-subtitle">premium irrigation</div>
+          </div>
+        </div>
+        <a class="top-link" href="#contacts">Связь</a>
       </div>
+    </header>
 
-      <div class="stats">
-        <div class="stat">
-          <span class="stat-number">01</span>
-          <span class="stat-label">Проект</span>
+    <section class="section hero reveal" id="top">
+      <div class="hero-grid">
+        <div>
+          <div class="hero-logo-wrap">
+            <div class="hero-logo">
+              <img src="img/apple-touch-icon.png" alt="Логотип ДА автополив" />
+            </div>
+
+            <div class="eyebrow">
+              <span class="eyebrow-dot"></span>
+              ДА автополив
+            </div>
+          </div>
+
+          <h1>Премиальные системы автополива</h1>
+
+          <p class="hero-text">
+            Умный и аккуратный подход к поливу для частных участков, садов и
+            продуманного ландшафта. Современно, удобно, спокойно.
+          </p>
+
+          <div class="hero-actions" style="margin-top: 20px;">
+            <a
+              class="btn btn-primary"
+              href="https://max.ru/u/f9LHodD0cOJqcSXvWud7ovTfTMkCtQk4Cwhu7j29Et6NJNkt8e-JeLGZksU"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ✦ Написать в MAX
+            </a>
+
+            <a
+              class="btn btn-secondary"
+              href="https://www.instagram.com/dmitriy.marchenko_?igsh=Z24yaGg3c3Fhd2p0"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ◦ Instagram
+            </a>
+          </div>
+
+          <div class="hero-panels" style="margin-top: 18px;">
+            <div class="panel">
+              <span class="panel-num">01</span>
+              <span class="panel-label">Проект</span>
+            </div>
+            <div class="panel">
+              <span class="panel-num">02</span>
+              <span class="panel-label">Монтаж</span>
+            </div>
+            <div class="panel">
+              <span class="panel-num">03</span>
+              <span class="panel-label">Сервис</span>
+            </div>
+          </div>
         </div>
-        <div class="stat">
-          <span class="stat-number">02</span>
-          <span class="stat-label">Монтаж</span>
-        </div>
-        <div class="stat">
-          <span class="stat-number">03</span>
-          <span class="stat-label">Сервис</span>
+
+        <div>
+          <div class="hero-card">
+            <p class="hero-card-title">Комфортный уход за участком</p>
+            <p class="hero-card-text">
+              Система полива должна работать quietly and smoothly: без лишней
+              суеты, с понятным обслуживанием и приятным результатом каждый день.
+            </p>
+          </div>
+
+          <div class="hero-card" style="margin-top: 10px;">
+            <p class="hero-card-title">Бренд уже внутри приложения</p>
+            <p class="hero-card-text">
+              Теперь логотип встроен в интерфейс, и приложение ощущается как
+              цельный фирменный продукт, а не просто красивая страница.
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="services">
+    <section class="section reveal" id="services">
       <h2 class="section-title">Услуги</h2>
       <p class="section-subtitle">
-        Всё, что нужно для удобной и красивой системы полива.
+        От идеи и проекта до аккуратного монтажа и дальнейшего обслуживания.
       </p>
 
-      <div class="services-grid">
-        <div class="service-card">
-          <div class="service-icon">💧</div>
+      <div class="grid two">
+        <div class="card">
+          <div class="icon-box">💧</div>
           <h3>Проектирование</h3>
-          <p>Подбор схемы полива под участок, зоны, растения и особенности территории.</p>
+          <p>Продуманная схема полива под участок, зоны, растения и удобство использования.</p>
         </div>
 
-        <div class="service-card">
-          <div class="service-icon">🛠️</div>
+        <div class="card">
+          <div class="icon-box">🛠️</div>
           <h3>Монтаж под ключ</h3>
-          <p>Установка оборудования, запуск системы и аккуратная настройка всех зон.</p>
+          <p>Установка, запуск, настройка и аккуратная реализация системы на объекте.</p>
         </div>
 
-        <div class="service-card">
-          <div class="service-icon">🌿</div>
+        <div class="card">
+          <div class="icon-box">🌿</div>
           <h3>Сезонное обслуживание</h3>
-          <p>Подготовка к сезону, проверка работы системы и обслуживание в течение года.</p>
+          <p>Подготовка к сезону, проверка узлов, диагностика и контроль состояния системы.</p>
         </div>
 
-        <div class="service-card">
-          <div class="service-icon">⚙️</div>
+        <div class="card">
+          <div class="icon-box">⚙️</div>
           <h3>Настройка и ремонт</h3>
-          <p>Диагностика, замена элементов, корректировка давления и режимов полива.</p>
+          <p>Корректировка режимов, замена элементов и восстановление стабильной работы.</p>
         </div>
       </div>
     </section>
 
-    <section class="section" id="benefits">
+    <section class="section reveal" id="benefits">
       <h2 class="section-title">Почему выбирают нас</h2>
       <p class="section-subtitle">
-        Чистый подход, понятная коммуникация и премиальное ощущение от результата.
+        Здесь важен не только результат, но и то, как всё ощущается в процессе.
       </p>
 
-      <div class="benefits-grid">
-        <div class="benefit-card">
-          <div class="benefit-icon">✨</div>
-          <h3>Аккуратный результат</h3>
-          <p>Система должна быть удобной, незаметной в быту и красивой в использовании.</p>
+      <div class="grid two">
+        <div class="card">
+          <div class="icon-box">✨</div>
+          <h3>Премиальный подход</h3>
+          <p>Мы смотрим на систему как на часть комфортной и красивой жизни на участке.</p>
         </div>
 
-        <div class="benefit-card">
-          <div class="benefit-icon">📐</div>
-          <h3>Индивидуальный подход</h3>
+        <div class="card">
+          <div class="icon-box">📐</div>
+          <h3>Индивидуальные решения</h3>
           <p>Каждый участок отличается, поэтому решение подбирается под конкретные задачи.</p>
         </div>
 
-        <div class="benefit-card">
-          <div class="benefit-icon">🤝</div>
-          <h3>Прямая связь</h3>
-          <p>Связаться можно быстро и просто через MAX и Instagram без лишних шагов.</p>
+        <div class="card">
+          <div class="icon-box">🤝</div>
+          <h3>Простая коммуникация</h3>
+          <p>Связь через MAX и Instagram — быстро, понятно и без перегруза.</p>
         </div>
 
-        <div class="benefit-card">
-          <div class="benefit-icon">🕒</div>
-          <h3>Долгий комфорт</h3>
-          <p>Полив — это не только монтаж, но и удобство обслуживания в будущем.</p>
+        <div class="card">
+          <div class="icon-box">🕒</div>
+          <h3>Комфорт надолго</h3>
+          <p>Система должна быть удобной и сразу после монтажа, и через время.</p>
         </div>
       </div>
     </section>
 
-    <section class="section" id="works">
+    <section class="section reveal" id="works">
       <h2 class="section-title">Наши работы</h2>
       <p class="section-subtitle">
-        Галерея уже подготовлена. Фото объектов добавим следующим этапом.
+        Галерея уже готова визуально. Фото объектов добавим следующим этапом.
       </p>
 
-      <div class="gallery-grid">
-        <div class="gallery-card">
+      <div class="grid gallery-grid">
+        <div class="card gallery-card">
           <div class="gallery-placeholder">Фото проекта скоро появится</div>
           <h3>Частный участок</h3>
-          <p>Система автополива для комфортного ухода за газоном, зелёными зонами и садом.</p>
+          <p>Продуманная система для газона, сада и комфортного регулярного ухода.</p>
+          <div class="chip-row">
+            <span class="chip">Газон</span>
+            <span class="chip">Сад</span>
+            <span class="chip">Участок</span>
+          </div>
         </div>
 
-        <div class="gallery-card">
+        <div class="card gallery-card">
           <div class="gallery-placeholder">Фото проекта скоро появится</div>
           <h3>Ландшафтный объект</h3>
-          <p>Аккуратное решение с учётом декоративных растений, формы участка и режима полива.</p>
+          <p>Аккуратный полив с учётом декоративных растений и структуры территории.</p>
+          <div class="chip-row">
+            <span class="chip">Ландшафт</span>
+            <span class="chip">Декор</span>
+          </div>
         </div>
 
-        <div class="gallery-card">
+        <div class="card gallery-card">
           <div class="gallery-placeholder">Фото проекта скоро появится</div>
           <h3>Сервис и настройка</h3>
-          <p>Подготовка системы к сезону, проверка оборудования и корректировка работы зон.</p>
+          <p>Проверка системы, регулировка давления и подготовка к сезону.</p>
+          <div class="chip-row">
+            <span class="chip">Сервис</span>
+            <span class="chip">Настройка</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="steps">
+    <section class="section reveal" id="steps">
       <h2 class="section-title">Как мы работаем</h2>
       <p class="section-subtitle">
-        Понятный путь от первого сообщения до готовой системы.
+        Путь простой, спокойный и без лишних движений.
       </p>
 
-      <div class="steps-grid">
-        <div class="step-card">
-          <div class="step-number">1</div>
-          <h3>Обращение</h3>
-          <p>Вы пишете нам в MAX или Instagram и кратко рассказываете о задаче.</p>
+      <div class="grid">
+        <div class="card step-card">
+          <div class="step-num">1</div>
+          <div>
+            <h3>Первое сообщение</h3>
+            <p>Ты пишешь нам в MAX или Instagram и кратко рассказываешь о своём участке.</p>
+          </div>
         </div>
 
-        <div class="step-card">
-          <div class="step-number">2</div>
-          <h3>Обсуждение</h3>
-          <p>Уточняем детали участка, пожелания и желаемый результат.</p>
+        <div class="card step-card">
+          <div class="step-num">2</div>
+          <div>
+            <h3>Обсуждение деталей</h3>
+            <p>Уточняем пожелания, особенности территории и логику будущей системы.</p>
+          </div>
         </div>
 
-        <div class="step-card">
-          <div class="step-number">3</div>
-          <h3>Решение</h3>
-          <p>Предлагаем подходящий вариант системы, этапы работ и дальнейший план.</p>
+        <div class="card step-card">
+          <div class="step-num">3</div>
+          <div>
+            <h3>Проект и реализация</h3>
+            <p>Формируем решение и переходим к аккуратному монтажу и настройке.</p>
+          </div>
         </div>
 
-        <div class="step-card">
-          <div class="step-number">4</div>
-          <h3>Реализация</h3>
-          <p>Монтаж, запуск, настройка и сопровождение для стабильной работы системы.</p>
+        <div class="card step-card">
+          <div class="step-num">4</div>
+          <div>
+            <h3>Поддержка</h3>
+            <p>После запуска система остаётся удобной в обслуживании и уходе.</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="about">
+    <section class="section reveal" id="about">
       <h2 class="section-title">О компании</h2>
-      <p class="about-text">
-        ДА автополив — это аккуратный и современный подход к системам полива.
-        Мы делаем решения, которые удобно использовать каждый день и приятно показывать.
+      <p class="section-subtitle">
+        Современный и аккуратный взгляд на системы автополива.
       </p>
 
-      <div class="about-list">
+      <div class="about-note">
+        ДА автополив — это внимание к деталям, визуальной чистоте и удобству в
+        реальной жизни. Мы делаем решения, которые не просто работают, а
+        ощущаются качественно каждый день.
+      </div>
+
+      <div class="info-list">
         <div class="info-row">
           <div>🏡</div>
           <div>
-            <strong>Для частных участков</strong>
-            <div class="mini">Подходит для домов, садов, газонов и продуманного ландшафта.</div>
+            <strong>Для частных домов и участков</strong>
+            <div class="mini-text">Подходит для современных домов, садов, газонов и ландшафта.</div>
           </div>
         </div>
 
@@ -569,7 +991,7 @@
           <div>🌱</div>
           <div>
             <strong>Для регулярного ухода</strong>
-            <div class="mini">Система помогает поддерживать участок в хорошем состоянии без лишней рутины.</div>
+            <div class="mini-text">Система помогает поддерживать красивый внешний вид участка без лишней рутины.</div>
           </div>
         </div>
 
@@ -577,55 +999,80 @@
           <div>📱</div>
           <div>
             <strong>Удобная связь</strong>
-            <div class="mini">Пока используем только MAX и Instagram — этого достаточно для быстрого контакта.</div>
+            <div class="mini-text">Сейчас используем только MAX и Instagram — быстро и по делу.</div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="contacts">
+    <section class="section reveal" id="contacts">
       <h2 class="section-title">Связь</h2>
       <p class="section-subtitle">
-        Сейчас доступны только эти способы связи.
+        Пока доступны только эти каналы общения.
       </p>
 
-      <div class="contact-list">
-        <div class="info-row">
-          <div>💬</div>
-          <div>
-            <strong>MAX</strong>
-            <div class="mini">Основной способ быстро написать и обсудить проект.</div>
-          </div>
+      <div class="grid two">
+        <div class="card">
+          <div class="icon-box">💬</div>
+          <h3>MAX</h3>
+          <p>Основной и быстрый способ написать по проекту, участку или обслуживанию.</p>
         </div>
 
-        <div class="info-row">
-          <div>📷</div>
-          <div>
-            <strong>Instagram</strong>
-            <div class="mini">Можно посмотреть профиль и написать в директ.</div>
-          </div>
+        <div class="card">
+          <div class="icon-box">📷</div>
+          <h3>Instagram</h3>
+          <p>Профиль компании и ещё один удобный способ выйти на связь через директ.</p>
         </div>
       </div>
 
-      <div class="contact-actions">
-        <a class="btn btn-primary" href="https://max.ru/u/f9LHodD0cOJqcSXvWud7ovTfTMkCtQk4Cwhu7j29Et6NJNkt8e-JeLGZksU" target="_blank" rel="noopener noreferrer">
+      <div class="hero-actions" style="margin-top: 16px;">
+        <a
+          class="btn btn-primary"
+          href="https://max.ru/u/f9LHodD0cOJqcSXvWud7ovTfTMkCtQk4Cwhu7j29Et6NJNkt8e-JeLGZksU"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Перейти в MAX
         </a>
-        <a class="btn btn-secondary" href="https://www.instagram.com/dmitriy.marchenko_?igsh=Z24yaGg3c3Fhd2p0" target="_blank" rel="noopener noreferrer">
+        <a
+          class="btn btn-secondary"
+          href="https://www.instagram.com/dmitriy.marchenko_?igsh=Z24yaGg3c3Fhd2p0"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Перейти в Instagram
         </a>
       </div>
 
       <div class="install-box">
-        <strong>Как установить на iPhone</strong>
-        <p class="install-note">
-          Открой сайт в Safari → нажми «Поделиться» → выбери «На экран Домой».
-        </p>
+        <strong>Установка на iPhone</strong>
+        <p>Открой сайт в Safari → нажми «Поделиться» → выбери «На экран Домой».</p>
       </div>
     </section>
 
-    <div class="footer-space"></div>
+    <section class="section cta-box reveal">
+      <h2>Готовы обсудить участок?</h2>
+      <p>Напиши нам, и начнём с понятного первого шага.</p>
+      <a
+        class="btn btn-primary"
+        href="https://max.ru/u/f9LHodD0cOJqcSXvWud7ovTfTMkCtQk4Cwhu7j29Et6NJNkt8e-JeLGZksU"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Связаться сейчас
+      </a>
+    </section>
   </div>
+
+  <a
+    class="floating-max"
+    href="https://max.ru/u/f9LHodD0cOJqcSXvWud7ovTfTMkCtQk4Cwhu7j29Et6NJNkt8e-JeLGZksU"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Написать в MAX"
+  >
+    MAX
+  </a>
 
   <nav class="bottom-nav">
     <a class="nav-link" href="#top">
@@ -658,6 +1105,20 @@
           });
       });
     }
+
+    const revealItems = document.querySelectorAll(".reveal");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
   </script>
 </body>
 </html>
