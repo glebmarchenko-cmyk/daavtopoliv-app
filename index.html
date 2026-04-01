@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>ДА автополив</title>
 
   <link rel="manifest" href="manifest.json" />
@@ -14,142 +14,637 @@
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
 
   <style>
+    :root {
+      --bg: #f5f1e8;
+      --card: rgba(255, 255, 255, 0.88);
+      --text: #2d2924;
+      --muted: #73685d;
+      --accent: #8b6b3f;
+      --accent-dark: #72552f;
+      --line: rgba(139, 107, 63, 0.12);
+      --shadow: 0 10px 30px rgba(43, 31, 17, 0.08);
+      --radius-xl: 26px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+    }
+
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
-      background: #f5f1e8;
-      color: #2f2a24;
-      padding: 20px;
-      line-height: 1.5;
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(139,107,63,0.10), transparent 35%),
+        radial-gradient(circle at top right, rgba(139,107,63,0.07), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Arial, sans-serif;
+      line-height: 1.45;
+      padding: 18px 16px 110px;
     }
 
-    .container {
-      max-width: 500px;
+    .app {
+      max-width: 560px;
       margin: 0 auto;
     }
 
+    .section {
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.65);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius-xl);
+      padding: 22px 18px;
+      margin-bottom: 16px;
+    }
+
     .hero {
-      text-align: center;
-      padding: 30px 20px;
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      margin-bottom: 20px;
+      padding: 28px 20px 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      right: -60px;
+      top: -70px;
+      border-radius: 50%;
+      background: rgba(139,107,63,0.09);
+      filter: blur(6px);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(139,107,63,0.10);
+      padding: 8px 12px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
     }
 
     h1 {
-      font-size: 32px;
-      margin-bottom: 10px;
+      margin: 0 0 10px;
+      font-size: 34px;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      position: relative;
+      z-index: 1;
     }
 
-    .subtitle {
+    .hero p {
+      margin: 0;
+      color: var(--muted);
       font-size: 16px;
-      color: #6f655a;
-      margin-bottom: 25px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-actions {
+      margin-top: 20px;
+      display: grid;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
     }
 
     .btn {
-      display: block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
       width: 100%;
-      text-align: center;
-      padding: 16px;
-      margin-bottom: 12px;
-      border-radius: 14px;
+      min-height: 54px;
+      padding: 14px 18px;
+      border-radius: 16px;
+      border: none;
       text-decoration: none;
-      font-size: 17px;
-      font-weight: bold;
-      transition: 0.2s;
+      font-size: 16px;
+      font-weight: 700;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      cursor: pointer;
+    }
+
+    .btn:active {
+      transform: scale(0.985);
     }
 
     .btn-primary {
-      background: #8b6b3f;
-      color: white;
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(139, 107, 63, 0.22);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-dark);
     }
 
     .btn-secondary {
-      background: white;
-      color: #8b6b3f;
-      border: 2px solid #8b6b3f;
+      background: #fff;
+      color: var(--accent);
+      border: 1.5px solid rgba(139, 107, 63, 0.18);
     }
 
-    .services {
-      background: white;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      margin-bottom: 20px;
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 18px;
     }
 
-    .services h2 {
-      margin-bottom: 15px;
-      font-size: 22px;
+    .stat {
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(139,107,63,0.10);
+      border-radius: 18px;
+      padding: 14px 10px;
+      text-align: center;
     }
 
-    .service-item {
-      padding: 12px 0;
-      border-bottom: 1px solid #eee;
+    .stat-number {
+      display: block;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 4px;
     }
 
-    .service-item:last-child {
-      border-bottom: none;
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
     }
 
-    .contacts {
-      background: white;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    .section-title {
+      margin: 0 0 6px;
+      font-size: 24px;
+      letter-spacing: -0.02em;
     }
 
-    .contacts h2 {
-      margin-bottom: 15px;
+    .section-subtitle {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .services-grid,
+    .benefits-grid,
+    .gallery-grid,
+    .steps-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .service-card,
+    .benefit-card,
+    .gallery-card,
+    .step-card {
+      background: rgba(255,255,255,0.82);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+
+    .service-card h3,
+    .benefit-card h3,
+    .gallery-card h3,
+    .step-card h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+
+    .service-card p,
+    .benefit-card p,
+    .gallery-card p,
+    .step-card p,
+    .about-text,
+    .install-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .service-icon,
+    .benefit-icon,
+    .step-number {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: rgba(139,107,63,0.10);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .gallery-placeholder {
+      height: 165px;
+      border-radius: 18px;
+      background:
+        linear-gradient(135deg, rgba(139,107,63,0.10), rgba(139,107,63,0.04)),
+        repeating-linear-gradient(
+          -45deg,
+          rgba(255,255,255,0.4),
+          rgba(255,255,255,0.4) 10px,
+          rgba(255,255,255,0.2) 10px,
+          rgba(255,255,255,0.2) 20px
+        );
+      border: 1px dashed rgba(139,107,63,0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 16px;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .about-list,
+    .contact-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .info-row {
+      background: rgba(255,255,255,0.78);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 15px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .info-row strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .mini {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .contact-actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .install-box {
+      border: 1px solid rgba(139,107,63,0.14);
+      background: rgba(255,255,255,0.68);
+      border-radius: 18px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .install-box strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .footer-space {
+      height: 8px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      max-width: 560px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.85);
+      box-shadow: 0 12px 30px rgba(37, 28, 17, 0.12);
+      border-radius: 22px;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      z-index: 50;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      padding: 8px 4px;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .nav-link:hover,
+    .nav-link:active {
+      background: rgba(139,107,63,0.10);
+      color: var(--accent);
+    }
+
+    .nav-icon {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    @media (min-width: 720px) {
+      .services-grid,
+      .benefits-grid,
+      .gallery-grid,
+      .steps-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .gallery-grid .gallery-card:first-child {
+        grid-column: span 2;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="app">
 
-    <div class="hero">
-      <h1>ДА автополив</h1>
-      <p class="subtitle">
-        Премиальные системы автополива под ключ
+    <section class="section hero" id="top">
+      <div class="eyebrow">ДА автополив</div>
+      <h1>Премиальные системы автополива под ключ</h1>
+      <p>
+        Современные решения для частных участков, садов и красивого ландшафта.
+        Удобная связь, аккуратный подход и комфортный сервис.
       </p>
 
-      <a class="btn btn-primary" href="https://max.ru/u/f9LHodD0cOJqcSXvWud7ovTfTMkCtQk4Cwhu7j29Et6NJNkt8e-JeLGZksU" target="_blank">
-        Связаться в MAX
-      </a>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="https://max.ru/u/f9LHodD0cOJqcSXvWud7ovTfTMkCtQk4Cwhu7j29Et6NJNkt8e-JeLGZksU" target="_blank" rel="noopener noreferrer">
+          Написать в MAX
+        </a>
+        <a class="btn btn-secondary" href="https://www.instagram.com/dmitriy.marchenko_?igsh=Z24yaGg3c3Fhd2p0" target="_blank" rel="noopener noreferrer">
+          Открыть Instagram
+        </a>
+      </div>
 
-      <a class="btn btn-secondary" href="https://www.instagram.com/dmitriy.marchenko_?igsh=Z24yaGg3c3Fhd2p0" target="_blank">
-        Instagram
-      </a>
-    </div>
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-number">01</span>
+          <span class="stat-label">Проект</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">02</span>
+          <span class="stat-label">Монтаж</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">03</span>
+          <span class="stat-label">Сервис</span>
+        </div>
+      </div>
+    </section>
 
-    <div class="services">
-      <h2>Наши услуги</h2>
-      <div class="service-item">Проектирование систем автополива</div>
-      <div class="service-item">Монтаж под ключ</div>
-      <div class="service-item">Сезонное обслуживание</div>
-      <div class="service-item">Настройка и ремонт</div>
-      <div class="service-item">Консультация по участку</div>
-    </div>
+    <section class="section" id="services">
+      <h2 class="section-title">Услуги</h2>
+      <p class="section-subtitle">
+        Всё, что нужно для удобной и красивой системы полива.
+      </p>
 
-    <div class="contacts">
-      <h2>Связь</h2>
-      <a class="btn btn-primary" href="https://max.ru/u/f9LHodD0cOJqcSXvWud7ovTfTMkCtQk4Cwhu7j29Et6NJNkt8e-JeLGZksU" target="_blank">
-        Написать в MAX
-      </a>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">💧</div>
+          <h3>Проектирование</h3>
+          <p>Подбор схемы полива под участок, зоны, растения и особенности территории.</p>
+        </div>
 
-      <a class="btn btn-secondary" href="https://www.instagram.com/dmitriy.marchenko_?igsh=Z24yaGg3c3Fhd2p0" target="_blank">
-        Открыть Instagram
-      </a>
-    </div>
+        <div class="service-card">
+          <div class="service-icon">🛠️</div>
+          <h3>Монтаж под ключ</h3>
+          <p>Установка оборудования, запуск системы и аккуратная настройка всех зон.</p>
+        </div>
 
+        <div class="service-card">
+          <div class="service-icon">🌿</div>
+          <h3>Сезонное обслуживание</h3>
+          <p>Подготовка к сезону, проверка работы системы и обслуживание в течение года.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">⚙️</div>
+          <h3>Настройка и ремонт</h3>
+          <p>Диагностика, замена элементов, корректировка давления и режимов полива.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="benefits">
+      <h2 class="section-title">Почему выбирают нас</h2>
+      <p class="section-subtitle">
+        Чистый подход, понятная коммуникация и премиальное ощущение от результата.
+      </p>
+
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <div class="benefit-icon">✨</div>
+          <h3>Аккуратный результат</h3>
+          <p>Система должна быть удобной, незаметной в быту и красивой в использовании.</p>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-icon">📐</div>
+          <h3>Индивидуальный подход</h3>
+          <p>Каждый участок отличается, поэтому решение подбирается под конкретные задачи.</p>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-icon">🤝</div>
+          <h3>Прямая связь</h3>
+          <p>Связаться можно быстро и просто через MAX и Instagram без лишних шагов.</p>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-icon">🕒</div>
+          <h3>Долгий комфорт</h3>
+          <p>Полив — это не только монтаж, но и удобство обслуживания в будущем.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="works">
+      <h2 class="section-title">Наши работы</h2>
+      <p class="section-subtitle">
+        Галерея уже подготовлена. Фото объектов добавим следующим этапом.
+      </p>
+
+      <div class="gallery-grid">
+        <div class="gallery-card">
+          <div class="gallery-placeholder">Фото проекта скоро появится</div>
+          <h3>Частный участок</h3>
+          <p>Система автополива для комфортного ухода за газоном, зелёными зонами и садом.</p>
+        </div>
+
+        <div class="gallery-card">
+          <div class="gallery-placeholder">Фото проекта скоро появится</div>
+          <h3>Ландшафтный объект</h3>
+          <p>Аккуратное решение с учётом декоративных растений, формы участка и режима полива.</p>
+        </div>
+
+        <div class="gallery-card">
+          <div class="gallery-placeholder">Фото проекта скоро появится</div>
+          <h3>Сервис и настройка</h3>
+          <p>Подготовка системы к сезону, проверка оборудования и корректировка работы зон.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="steps">
+      <h2 class="section-title">Как мы работаем</h2>
+      <p class="section-subtitle">
+        Понятный путь от первого сообщения до готовой системы.
+      </p>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3>Обращение</h3>
+          <p>Вы пишете нам в MAX или Instagram и кратко рассказываете о задаче.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3>Обсуждение</h3>
+          <p>Уточняем детали участка, пожелания и желаемый результат.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3>Решение</h3>
+          <p>Предлагаем подходящий вариант системы, этапы работ и дальнейший план.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <h3>Реализация</h3>
+          <p>Монтаж, запуск, настройка и сопровождение для стабильной работы системы.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <h2 class="section-title">О компании</h2>
+      <p class="about-text">
+        ДА автополив — это аккуратный и современный подход к системам полива.
+        Мы делаем решения, которые удобно использовать каждый день и приятно показывать.
+      </p>
+
+      <div class="about-list">
+        <div class="info-row">
+          <div>🏡</div>
+          <div>
+            <strong>Для частных участков</strong>
+            <div class="mini">Подходит для домов, садов, газонов и продуманного ландшафта.</div>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div>🌱</div>
+          <div>
+            <strong>Для регулярного ухода</strong>
+            <div class="mini">Система помогает поддерживать участок в хорошем состоянии без лишней рутины.</div>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div>📱</div>
+          <div>
+            <strong>Удобная связь</strong>
+            <div class="mini">Пока используем только MAX и Instagram — этого достаточно для быстрого контакта.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contacts">
+      <h2 class="section-title">Связь</h2>
+      <p class="section-subtitle">
+        Сейчас доступны только эти способы связи.
+      </p>
+
+      <div class="contact-list">
+        <div class="info-row">
+          <div>💬</div>
+          <div>
+            <strong>MAX</strong>
+            <div class="mini">Основной способ быстро написать и обсудить проект.</div>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div>📷</div>
+          <div>
+            <strong>Instagram</strong>
+            <div class="mini">Можно посмотреть профиль и написать в директ.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-actions">
+        <a class="btn btn-primary" href="https://max.ru/u/f9LHodD0cOJqcSXvWud7ovTfTMkCtQk4Cwhu7j29Et6NJNkt8e-JeLGZksU" target="_blank" rel="noopener noreferrer">
+          Перейти в MAX
+        </a>
+        <a class="btn btn-secondary" href="https://www.instagram.com/dmitriy.marchenko_?igsh=Z24yaGg3c3Fhd2p0" target="_blank" rel="noopener noreferrer">
+          Перейти в Instagram
+        </a>
+      </div>
+
+      <div class="install-box">
+        <strong>Как установить на iPhone</strong>
+        <p class="install-note">
+          Открой сайт в Safari → нажми «Поделиться» → выбери «На экран Домой».
+        </p>
+      </div>
+    </section>
+
+    <div class="footer-space"></div>
   </div>
+
+  <nav class="bottom-nav">
+    <a class="nav-link" href="#top">
+      <span class="nav-icon">⌂</span>
+      <span>Главная</span>
+    </a>
+    <a class="nav-link" href="#services">
+      <span class="nav-icon">◫</span>
+      <span>Услуги</span>
+    </a>
+    <a class="nav-link" href="#works">
+      <span class="nav-icon">▣</span>
+      <span>Работы</span>
+    </a>
+    <a class="nav-link" href="#contacts">
+      <span class="nav-icon">✦</span>
+      <span>Связь</span>
+    </a>
+  </nav>
 
   <script>
     if ("serviceWorker" in navigator) {
