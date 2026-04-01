@@ -2,8 +2,8 @@
   "name": "ДА автополив",
   "short_name": "ДА автополив",
   "description": "Премиальные системы автополива под ключ",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "/daavtopoliv-app/",
+  "scope": "/daavtopoliv-app/",
   "display": "standalone",
   "background_color": "#f5f1e8",
   "theme_color": "#8b6b3f",
@@ -17,6 +17,11 @@
     {
       "src": "img/icon-512.png",
       "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "img/apple-touch-icon.png",
+      "sizes": "180x180",
       "type": "image/png"
     }
   ]
